@@ -34,6 +34,8 @@ If measuring exact time is required it is possible to connect DS3231 module to t
 
 ## Wiring diagram
 
+Here is wiring diagram for all external peripheries.
 
+![Alt text](media/wiring_diagram)
 
 
