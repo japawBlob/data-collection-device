@@ -38,4 +38,11 @@ Here is wiring diagram for all external peripheries.
 
 ![Alt text](media/wiring_diagram)
 
+## Functionality description
+
+### User interface
+Here is wiring diagram for all external peripheries.
+
+![Alt text](media/wiring_diagram)
+
 
