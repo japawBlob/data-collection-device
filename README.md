@@ -81,8 +81,9 @@ Device supports following transmitions:
 
 When setting up desired temperature in __Temperature screen__, confirmation the message is sent via usart. Confiramtion message contains ASCII coded temperature in Celsius and is terminated by 0x03 character.
 
-When sending data on __Data screen__ all data is sent via USART. Message respects .csv format, and ends each line with new line and carrige return characters. Final character is also 0x03 character.
+When sending data on __Data screen__ all data is sent via USART. Message respects .csv format, and ends each line with new line and carrige return characters. Final character is 0x03 character.
 
+The hub can also receive commad which contains "DATA" in ascii characters and after receiving this message it respons by sending all data, as if the send data on __Data screen__ was pressed.
 
 
 
