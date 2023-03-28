@@ -36,13 +36,53 @@ If measuring exact time is required it is possible to connect DS3231 module to t
 
 Here is wiring diagram for all external peripheries.
 
-![Alt text](media/wiring_diagram)
+![Wiring diagram](media/wiring_diagram)
 
 ## Functionality description
 
 ### User interface
-Here is wiring diagram for all external peripheries.
 
-![Alt text](media/wiring_diagram)
+Basic user interface consists of three main screens.
+
+#### __Main screen__
+
+The main screen displays currently measured values. Function of user interface buttons is displayed on the bottom part of the screen. 
+Rotary encoder is dormant.
+
+![Main hub screen](media/home_hub.png)
+
+By pressing set thermostat, we get to __Temperature screen__ and if we choose show data, we will get to the __Data screen__
+
+#### __Temperature screen__
+
+On this screen you can set your desired temperature. This entered temperature will be sent via USART to connected device.
+
+For setting temperature, rotary encoder is used. With left User button, we confirm the selection and with right we return to the __Main screen__. If you leave this screen without confirming the new value, it will be discarded, and original value will be kept.
+
+![Main hub screen](media/temperature_hub.png)
+
+#### __Data screen__
+
+On data screen we can browse all logged data. Using rotary encoder as scroll wheel we can browse all logged data. 
+Logged data is stored in .csv format. After pressing left user button, all user data will be sent in .csv format to USART. 
+By pressing right user button, we return back to __Main screen__
+
+![Main hub screen](media/data_hub.png)
+
+### Comunication format
+
+Communication with peripheral devices, which use custom communication format follows communication the format. Namely [DHT11](https://components101.com/sites/default/files/component_datasheet/DHT11-Temperature-Sensor.pdf) and [DS3231](https://www.analog.com/media/en/technical-documentation/data-sheets/DS3231.pdf)
+
+Communication via USART device uses 0x03 character as symbol for End of transmition. 
+
+Device supports following transmitions:
+
+#### Send temperature
+
+When setting up desired temperature in __Temperature screen__, confirmation the message is sent via usart. Confiramtion message contains ASCII coded temperature in Celsius and is terminated by 0x03 character.
+
+When sending data on __Data screen__ all data is sent via USART. Message respects .csv format, and ends each line with new line and carrige return characters. Final character is also 0x03 character.
+
+
 
 
