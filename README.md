@@ -4,6 +4,8 @@ Semestral project for CTU FEL subject B4M38AVS
 
 Author: Jakub Jíra
 
+Repository: [japawBlob/data-collection-device](https://github.com/japawBlob/data-collection-device)
+
 ## Motivation
 
 This project aims to create a basic smart home hub for monitoring and storing useful data. Data that is being monitored is temperature, humidity and vibration. These data are then stored on an SD card. Communication via USART is also implemented for transmitting data, and requesting other services from other devices.
@@ -91,16 +93,14 @@ The hub can also receive a command which contains "DATA" in ASCII characters, an
 
 ### Software behaviour
 
-The software composes of two parts, the deterministic periodic readout of measured data and non-deterministic handling of external communication requests and user inputs.
+The software composes of two parts, the deterministic periodic readout of measured data and the non-deterministic handling of external communication requests and user inputs.
 
 #### Periodic
 
-Core of deterministic readout is timer, which creates impulse each second, that starts all reading of all sensors and storing newly read data to SD card. The periodic check also checks if there is incomming data to be read on USART interface. Response is handled during non-deterministit window, since transmitting large amounts of data could block the interrupt for a long time.
+The core of deterministic readout is a timer, which creates impulse each second, starting all sensors' readings and storing newly read data to an SD card. The periodic check also checks if there is incoming data to be read on the USART interface. The response is handled during the non-determinist window since transmitting large amounts of data could block the interrupt for a long time.
 
 Execution of deterministic tasks has priority over non-deterministic ones.
 
 #### Non-deterministic
 
-Non-deterministic approach is based on handling user events, which will be interpreted based on currently active screen. Sending data via USART is also handeled in non-deterministic behaviour.
-
-
+The non-deterministic approach is based on handling user events, which will be interpreted based on the currently active screen. Sending data via USART is also handled in non-deterministic behaviour.

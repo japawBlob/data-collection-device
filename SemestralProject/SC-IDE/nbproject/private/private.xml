@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <data xmlns="http://www.netbeans.org/ns/make-project-private/1">
+        <activeConfTypeElem>1</activeConfTypeElem>
+        <activeConfIndexElem>0</activeConfIndexElem>
+    </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/src/scene_handler.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/inc/dht11.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/inc/accelerometer.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/src/main.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/STM32_EVAL/Common/stm32_eval_spi_accel.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/inc/logger.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/STM32_EVAL/stm32_eval.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/src/dht11.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/STM32_EVAL/stm32_eval.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/STM32_EVAL/Common/lcd_st7565p.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_usart.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/src/accelerometer.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/inc/scene_handler.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/STM32_EVAL/Common/lcd_st7565p.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/STM32_EVAL/Common/lcd_framebuffer.h</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Project/embeddedApps/SemestralProject/src/logger.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/Third_Party/System/iprintf.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/STM32_EVAL/Common/lcd_framebuffer.c</file>
+            <file>file:/C:/Users/JakubJíra/Codes/SC-KIT-AVS/Utilities/Third_Party/System/serial_driver.c</file>
+        </group>
+    </open-files>
+</project-private>
