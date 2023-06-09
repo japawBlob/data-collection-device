@@ -73,40 +73,44 @@ paginate: true
 
 # Goal of project
 
-Logging temperature, humidity, vibrations
+To create a logging device used in smart home setup
 
-Measuring time
+Monitor temperature, humidity, and vibrations and provide measurements to a connected device via UART
 
-Displaying logged data
+Display and store measured values for the user to access
 
 ---
 
 # Measuring values 
 
-For temperature and humidity: sensor DHT11
+Sensor DHT11 provides measurements for temperature and humidity
 
-Internal temperature sensor highly innacurate
+Monitoring temperature using an internal temperature sensor proved highly inaccurate
 
-Built in accelerometer for virbrations
+Built-in accelerometer AIS226DS is used for measuring vibrations
 
 ---
 
 # Measuring time
 
-Originally wanted to use DS3231 for RTC
+Initially wanted to use an external module DS3231 for RTC
 
-In application build in RTC is used
+This approach was discarded in favor of built-in RTC on the chip to simplify the design
 
 ---
 
 
 # Displaying logged data
 
-Data is stored in EEPROM memory
+All logged data is stored on the EEPROM
 
-Able to be read out using UART in .csv format
+It is able to be read out using UART in .csv format or viewed directly on the display
 
-Or directly on display
+## UART Communication 
+
+Receiving ```0xdd``` byte sends data in .csv format
+
+Receiving ```0xcc``` byte clears all stored data
 
 ---
 
@@ -114,20 +118,85 @@ Or directly on display
 
 ## Home hub
 
-![h:400](media/home.jpg)
+Refreshes every second with new data
+
+Displays current Temperature, Humidity, and Seismic reading
+
+Displayed free space for data entries
+
+![bg right:47% 100%](media/home.jpg)
 
 ---
+
+# User interface
+
+## Home hub - Interactions
+
+Button BT2: Open thermostat screen
+
+Button BT1: Open data screen
+
+Rotary encoder: dormant
+
+![bg right:47% 100%](media/home.jpg)
+
+---
+
 
 # User interface
 
 ## Thermostat
 
-![h:400](media/thermostat.jpg)
+Used for sending the desired temperature to a device connected via UART
+
+For setting a temperature on a external device
+
+![bg right:47% 100%](media/thermostat.jpg)
 
 ---
 
 # User interface
 
-## Data screen
+## Thermostat - Interaction
 
-![h:400](media/data.jpg)
+Button BT2: Send displayed temperature
+
+Button BT1: Back to the Home screen
+
+Rotary encoder: Modify displayed temperature
+
+![bg right:47% 100%](media/thermostat.jpg)
+
+---
+
+# User interface
+
+## Data screen 
+
+Screen displaying all recorded data 
+
+![bg right:47% 100%](media/data.jpg)
+
+---
+
+# User interface
+
+## Data screen - Interaction
+
+Button BT2: Send data in .csv format to UART
+
+Button BT1: Back to the Home screen
+
+Rotary encoder: Scroll through entries
+
+![bg right:47% 100%](media/data.jpg)
+
+---
+
+# Conclusion
+
+With initial simplifications (removing external RTC etc.), all described functionalities work without any known issues
+
+The device successfully records and stores measurements and communicates with connected devices
+
+Overall, I would rate the project as a success

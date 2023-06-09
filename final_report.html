@@ -89,7 +89,8 @@ body.marp-vscode blockquote {
 }
 
 </style>
-        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
 <style>
@@ -118,38 +119,39 @@ body.marp-vscode blockquote {
 <p>Author: Jakub Jíra</p>
 <p>Repository: <a href="https://github.com/japawBlob/data-collection-device">japawBlob/data-collection-device</a></p>
 <h1 id="basic-device-information">Basic device information</h1>
-<p>The main goal of the project is to create a device, that could serve as Inteligent house hub. Allowing connection of other devices, data logging and communicating with user via LCD and UART.</p>
-<p>Current data being motitored are air humidity, air temperature and vibrations. This data is stored on internal EEPROM, as well as it can be sent to connected device via USART.</p>
+<p>The project's primary goal is to create a device that could serve as an Intelligent house hub—allowing connection of other devices, data logging, and communicating with user via LCD and UART.</p>
+<p>Current data being monitored are air humidity, air temperature, and vibrations. This data is stored on the internal EEPROM and can be sent to a connected device via USART.</p>
 <h1 id="used-hardware">Used hardware</h1>
-<p>Microcontroller used in this project is STM32F207VC embedded in Sleepy Cat development board. This microcontroller handles all sensor data processing and communication with other devices.</p>
-<p>Connection of the peripheral device is show in the following picture.</p>
+<p>The microcontroller used in this project is STM32F207VC, embedded in the Sleepy Cat development board. This microcontroller handles all sensor data processing and communication with other devices.</p>
+<p>The connection of the peripheral device is shown in the following picture.</p>
 <p><img src="file:///c:\Users\JakubJíra\Codes\data-collection-device\media\Wiring_diagram.png" alt="Wiring diagram"></p>
 <h2 id="sensors">Sensors</h2>
-<p>For measuring vibrations the built-in accellerometer AIS226DS on Sleepy Cat board is used. Accelerometer is double axis and is connected via Serial Peripheral Interface (SPI).</p>
-<p>Sensor DHT11 is used for humidity and temperature mesaurements. It is connected to the Sleepy Cat board by primitive custom single-bus communication protocol.</p>
-<p>Internal built-in thermometer is also initialised, but not used.</p>
+<p>The built-in accelerometer AIS226DS on the Sleepy Cat board measures vibrations. Accelerometer is double-axis and is connected via Serial Peripheral Interface (SPI).</p>
+<p>Sensor DHT11 is used for humidity and temperature measurements. It is connected to the Sleepy Cat board by a primitive custom single-bus communication protocol.</p>
+<p>The built-in internal thermometer is also initialised but not used.</p>
 <h2 id="measuring-time">Measuring time</h2>
-<p>For time measurement internal Real-time clock (RTC) is used. I decided againts external RTC in order to simplify the developement and to use included hardware. External battery can be connected to the built-in RTC to preserve current time even in the case of loosing the main power source.</p>
+<p>For time measurement internal Real-time clock (RTC) is used. I decided against external RTC to simplify the development and use included hardware. External batteries can be connected to the built-in RTC to preserve current time even when losing the primary power source.</p>
 <h2 id="hci">HCI</h2>
-<p>Device uses built-in peripherals in Sleepy Cat board to provide user interface.</p>
-<p>For displaying information LCD RX12864D2 with built in matrix controller ST7565 is used. It is connected via SPI.</p>
-<p>Interaction with user is provided by built in buttons and rotary encoder. Exact usage described in <a href="#graphical-user-interface">Graphical user interface</a>.</p>
+<p>The device uses built-in peripherals in the Sleepy Cat board to provide the user interface.</p>
+<p>For displaying information LCD RX12864D2 with built-in matrix controller ST7565 is used. It is connected via SPI.</p>
+<p>Built-in buttons and a rotary encoder provide interaction with a user. The exact usage is described in the <a href="#graphical-user-interface">Graphical user interface</a> chapter.</p>
 <h2 id="non-volatile-memory">Non-volatile memory</h2>
-<p>EEPROM module M24C64 included in Sleepy Cat board is used as non-volatile data storage. Module is connected via I2C.</p>
+<p>EEPROM module M24C64 included in Sleepy Cat board is used as non-volatile data storage. The module is connected via I2C.</p>
 <h1 id="software-description">Software description</h1>
-<p>Rough diagram of the software function is described in the following picture.</p>
+<p>A rough diagram of the software function is described in the following picture.</p>
 <p><img src="file:///c:\Users\JakubJíra\Codes\data-collection-device\media\main_software_loop.png" alt="Wiring diagram"></p>
+<p>You can read more about <a href="#setup">Setup</a>, <a href="#accelerometer-interrupt">Accelerometer interrupt</a>, <a href="#read-update-and-store-data">Read, update and store data</a> and <a href="#handling-user-input">Handle user input</a> in corresponding chapters.</p>
 <h2 id="setup">Setup</h2>
-<p>Setup consists of following innitialisation routines</p>
+<p>The setup consists of following initialisation routines</p>
 <h3 id="uart">UART</h3>
-<p>UART is configured as follow:</p>
+<p>UART is configured as follows:</p>
 <ul>
 <li>BaudRate = 115200</li>
 <li>Word Length = 8b</li>
 <li>One stop bit</li>
 <li>No parity</li>
 </ul>
-<p>Exact initialisation in following code snippet:</p>
+<p>Exact initialisation in the following code snippet:</p>
 <pre><code class="language-c++">    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">USART_InitTypeDef</span> USART_InitStructure;
 
     USART_InitStructure.USART_BaudRate = <span class="hljs-number">115200</span>;
@@ -162,8 +164,8 @@ body.marp-vscode blockquote {
     <span class="hljs-built_in">STM_EVAL_COMInit</span>(com_port, &amp;USART_InitStructure);
 </code></pre>
 <h3 id="buttons">Buttons</h3>
-<p>Buttons SW1 and SW2, that are built-in on Sleepy Cat board are used for user interaction.</p>
-<p>They are initialised using following code snippet:</p>
+<p>Built-in Sleepy Cat buttons SW1 and SW2 are used for user interaction.</p>
+<p>They are initialised using the following code snippet:</p>
 <pre><code class="language-c++">    GPIO_InitTypeDef GPIO_InitStructure;
     <span class="hljs-built_in">GPIO_StructInit</span>(&amp;GPIO_InitStructure);
 
@@ -177,7 +179,7 @@ body.marp-vscode blockquote {
     <span class="hljs-built_in">GPIO_Init</span>(GPIOC, &amp;GPIO_InitStructure);
 </code></pre>
 <h3 id="dht11">DHT11</h3>
-<p>For correct DHT11 function, measuring micro seconds is requiered. For this purpose timer TIM2 is used and configured using following code snippet:</p>
+<p>For the correct DHT11 function, measuring microseconds is required. For this purpose, timer TIM2 is used and configured using the following code snippet:</p>
 <pre><code class="language-c++">    <span class="hljs-built_in">RCC_APB1PeriphClockCmd</span>(RCC_APB1Periph_TIM2, ENABLE);
     
     TIM_TimeBaseInitTypeDef timer;
@@ -193,8 +195,8 @@ body.marp-vscode blockquote {
     <span class="hljs-built_in">TIM_ITConfig</span>(DHT11_TIM, TIM_IT_Update, ENABLE);
     <span class="hljs-built_in">TIM_Cmd</span>(DHT11_TIM, ENABLE);
 </code></pre>
-<p>By this configuration timer ticks every micro second, with whole period lasting one second.</p>
-<p>For single wire communication B0 pin is used in both input and output mode. Following snippet is used for initialising DHT11 pin:</p>
+<p>The timer configured by before mentioned code snipped ticks every microsecond with the whole period lasting one second.</p>
+<p>Pin B0 is used in both input and output modes for single-wire communication. The following snippet is used for initialising DHT11 pin:</p>
 <pre><code class="language-c++"><span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">set_dht11_pin</span><span class="hljs-params">(<span class="hljs-type">uint8_t</span> mode)</span></span>{
     GPIO_InitTypeDef GPIO_InitStructure;
     <span class="hljs-built_in">GPIO_StructInit</span>(&amp;GPIO_InitStructure);
@@ -215,8 +217,8 @@ body.marp-vscode blockquote {
 }
 </code></pre>
 <h3 id="rtc">RTC</h3>
-<p>Real time clock is used for creation of timestamps, that are saved with data.</p>
-<p>Following code snippet is used for configuration of RTC:</p>
+<p>The real-time clock is used to create timestamps that are saved with data.</p>
+<p>The following code snippet is used for the configuration of RTC:</p>
 <pre><code class="language-c++">    <span class="hljs-built_in">RCC_APB1PeriphClockCmd</span>(RCC_APB1Periph_PWR, ENABLE);
     <span class="hljs-built_in">PWR_BackupAccessCmd</span>(ENABLE);
     
@@ -237,11 +239,11 @@ body.marp-vscode blockquote {
     <span class="hljs-built_in">PWR_BackupAccessCmd</span>(DISABLE);
 </code></pre>
 <h3 id="eeprom">EEPROM</h3>
-<p>EEPROM initialisation is provided by <em>stm32_eval_i2c_ee</em> library. Initialisation code is located in <code>sEE_Init()</code> function. This function initialises I2C bus, and sets up DMA and corresponding peripheral clocks.</p>
+<p>EEPROM initialisation is provided by the <em>stm32_eval_i2c_ee</em> library. Initialisation code is located in <code>sEE_Init()</code> function. This function initialises the I2C bus and sets up DMA and corresponding peripheral clocks.</p>
 <h3 id="lcd">LCD</h3>
-<p>LCD initialisation setups SPI communication, sets up brightness of the LCD and clears it. Function <code>LCD_Init()</code> from library <em>lcd_st7565p</em> is used for this initialisation.</p>
+<p>LCD initialisation setups SPI communication, sets up the brightness of the LCD, and clears it. Function <code>LCD_Init()</code> from library <em>lcd_st7565p</em> is used for this initialisation.</p>
 <h3 id="accellerometer">Accellerometer</h3>
-<p>Communication with accelerometer is initialised via function <code>sACCEL_Init()</code> from <em>stm32_eval_spi_accel library</em>. After that accelerometer is initiated and reading is set up to be in big endian mode. Code is on the following snippet:</p>
+<p>Communication with the accelerometer is initialised via the function <code>sACCEL_Init()</code> from the <em>stm32_eval_spi_accel library</em>. After that accelerometer is initiated, and the reading is set up to be in big-endian mode. The code is on the following snippet:</p>
 <pre><code class="language-c++">    <span class="hljs-built_in">sACCEL_Init</span>();
     <span class="hljs-comment">// Enable reading</span>
     <span class="hljs-built_in">sACCEL_WriteReg</span>(<span class="hljs-number">0x20</span>, <span class="hljs-number">0x83</span>);
@@ -250,8 +252,8 @@ body.marp-vscode blockquote {
     b |= <span class="hljs-number">0x20</span>;
     <span class="hljs-built_in">sACCEL_WriteReg</span>(<span class="hljs-number">0x21</span>, b);
 </code></pre>
-<p>Accelerometer in this application is used to monitor vibrations. For this functionality, periodic reading of acceleration is required to determine amount of vibrations. Timer TIM5 is used for this periodic reading of vibrations. Timer is set to generate interrupt every 50ms.</p>
-<p>Following snipped is used for timer initialisation:</p>
+<p>Accelerometer in this application is used to monitor vibrations. For this functionality, periodic reading of acceleration is required to determine the amount of vibrations. Timer TIM5 is used for this periodic reading of vibrations. A timer is set to generate an interrupt every 50ms.</p>
+<p>The following snipped is used for timer initialisation:</p>
 <pre><code class="language-c++">    <span class="hljs-built_in">RCC_APB1PeriphClockCmd</span>(RCC_APB1Periph_TIM5, ENABLE);
     
     <span class="hljs-comment">//Enabeling timer interrupt</span>
@@ -280,7 +282,7 @@ body.marp-vscode blockquote {
 <p>Logger is a custom library written for this project. It serves the purpose of creating new data entries and managing memory.</p>
 <p>Initialisation of this library consists of creating an array for storing data entries, reading EEPROM memory for any already present data, loading it, and determining the next available address.</p>
 <h3 id="encoder">Encoder</h3>
-<p>Encoder is used with timer TIM4 in encoder mode. The initialisation of encoder can be seen in following snippet:</p>
+<p>Encoder is used with timer TIM4 in encoder mode. The initialisation of the encoder can be seen in the following snippet:</p>
 <pre><code class="language-c++"><span class="hljs-comment">/* Initialize the corresponding input pins */</span>
         GPIO_InitTypeDef GPIO_InitStructure;
 <span class="hljs-comment">/* Enable clock to GPIOD */</span>
@@ -313,12 +315,73 @@ body.marp-vscode blockquote {
         <span class="hljs-built_in">TIM_Cmd</span>(TIM4, ENABLE);
 </code></pre>
 <h2 id="main-loop">Main loop</h2>
-<p>The main loop of program consists of checking Accelerometer interrupt</p>
+<p>The main loop of the program consists of three functionalities.</p>
+<h3 id="accelerometer-interrupt">Accelerometer interrupt</h3>
+<p>The first one is checking the accelerometer interrupt. If it occurred, the current value is recorded. Twenty samples are recorded before the next functionality is executed. The minimum and maximum from recorded data determine the amount of seismic vibrations.</p>
 <h3 id="read-update-and-store-data">Read, update and store data</h3>
-<h3 id="handling-user-input">Handling user input</h3>
-<h1 id="graphical-user-interface">Graphical user interface</h1>
+<p>The second functionality happens after twenty accelerometer interrupts. During the interrupt new data record is created and stored. Data entry looks followingly:</p>
+<pre><code class="language-c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">data_entry</span> {
+    <span class="hljs-type">uint8_t</span> time_stamp;
+    <span class="hljs-type">int8_t</span> temperature;
+    <span class="hljs-type">uint8_t</span> humidity;
+    <span class="hljs-type">uint8_t</span> vibrations;
+};
+</code></pre>
+<p>The timestamp represents the current seconds received from the RTC. Temperature is received from the DHT11 sensor as well as humidity.
+Vibrations are determined by comparing the minimum and maximum recorded from the accelerometer during the previous step.</p>
+<p>The value of the accelerometer is measured in four levels. None, low, medium, and high. For representing this amount, the following enum is used:</p>
+<pre><code class="language-c++"><span class="hljs-keyword">enum</span> {SEISMIC_NONE, SEISMIC_LOW, SEISMIC_MEDIUM, SEISMIC_HIGH};
+</code></pre>
+<p>This created entry is then stored to EEPROM, and temporary variables such as interrupt counter and accelerometer minimum and maximum are cleared. Also, the GUI scene is updated to display the newest data.</p>
+<p>The following snippet represents the second functionality:</p>
+<pre><code class="language-c++">    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">data_entry</span> new_entry;
+    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">DHT11_response</span> resp = <span class="hljs-built_in">read_DHT11</span>();
+    new_entry.temperature = resp.integral_T;
+    new_entry.humidity = resp.integral_RH;
+    new_entry.vibrations = accelerometer_state.current_vibration;
+    <span class="hljs-built_in">clear_accelerometer</span>();
+    RTC_TimeTypeDef time;
+    <span class="hljs-built_in">RTC_GetTime</span>(<span class="hljs-number">0</span>, &amp;time);
+    new_entry.time_stamp = time.RTC_Seconds;
+    <span class="hljs-built_in">append_mem_entry</span>(new_entry);
 
-        
+    counter = <span class="hljs-number">0</span>;
+    <span class="hljs-built_in">update_scene</span>();
+    report_count++;
+</code></pre>
+<h3 id="handling-user-input">Handling user input</h3>
+<p>When the user buttons are pressed, the encoder changes its position, or a message is received on USART; this function handles that event.</p>
+<p>The currently active scene influences buttons' and encoders' behavior - more information in <a href="#graphical-user-interface">Graphical user interface</a>.</p>
+<p>The application currently accepts two kinds of messages on USART. Both are one-byte words, one is <code>0xcc</code>, and the other is <code>0xdd</code></p>
+<p>After receiving <code>0xcc</code>, the application clears all stored data.</p>
+<p>After receiving <code>0xdd</code>, the application responds with all recorded data displayed in .csv format.</p>
+<h1 id="graphical-user-interface">Graphical user interface</h1>
+<p>The graphical interface consists of three screens, which provide user interaction via two buttons and a single rotary encoder. The screens are named <a href="#home-hub">Home hub</a>, <a href="#set-thermostat">Set thermostat</a>, <a href="#data-screen">Data</a>.</p>
+<h2 id="home-hub">Home hub</h2>
+<p><img src="file:///c:\Users\JakubJíra\Codes\data-collection-device\media\home.jpg" alt="Home hub screen"></p>
+<p>The primary purpose of <strong>Home hub</strong> is to provide current information. The information displayed is refreshed every second or earlier when expected user input is received.</p>
+<p>Displayed values are temperature in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">°</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">\degree C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">°</span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span>, air humidity in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">\%</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8056em;vertical-align:-0.0556em;"></span><span class="mord">%</span></span></span></span>, and seismic activity stated verbally using four levels of seismic: NONE, LOW, MID, and HIGH.</p>
+<p>With values logged, it is also displayed free space that is left on the EEPROM.</p>
+<p>User button 2 will open <a href="#set-thermostat">Set thermostat</a>, and user button 1 will open <a href="#data-screen">Data</a>.</p>
+<p>On this screen, the rotary encoder is dormant.</p>
+<h2 id="set-thermostat">Set thermostat</h2>
+<p><img src="file:///c:\Users\JakubJíra\Codes\data-collection-device\media\thermostat.jpg" alt="Thermostat screen"></p>
+<p>The idea behind the Thermostat screen is, if connected to the device, that controls external temperature - such as a thermostat or an air conditioner; using this functionality, we can set the new desired temperature utilizing this device.</p>
+<p>User button 2 sends the currently displayed temperature on the screen to UART. User button 1 will take us back to the <a href="#home-hub">Home hub</a> screen.</p>
+<p>The rotary encoder is used to modify the currently displayed temperature. Clockwise rotations increment, and counterclockwise rotations decrement the displayed temperature.</p>
+<h2 id="data">Data</h2>
+<p><img src="file:///c:\Users\JakubJíra\Codes\data-collection-device\media\data.jpg" alt="Data screen"></p>
+<p>The data screen contains all recordings with corresponding timestamps.</p>
+<p>The rotary encoder is used as a scroll wheel to go through all data entries.</p>
+<p>Pressing user button 2 sends all data to USART in .csv format. Pressing user button 1 takes us back to the <a href="#home-hub">Home hub</a> screen.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>The main goal of this project was to create a device that would be able to log data, display it and provide a communication interface so that the data could be processed elsewhere.</p>
+<p>From the first draft project was a little bit simplyfied. The usage of the external real-time clock was omitted in favour of the internal real-time clock. Incoming communication messages were also simplified to single-byte messages. The integrated thermistor proved to be quite inaccurate for temperature reading, and temperature reading from sensor DHT11 was used instead.</p>
+<p>Using mentioned simplifications allowed me to focus on functioning code, which works as expected without any side effects.</p>
+<p>Improvement could be achieved by unifying all custom-made libraries. Some pass values as global variables, whereas others provide them via getters and setters.</p>
+<p>Besides the inconsistency in libraries, I am pretty happy with the result and overall application.</p>
+
+        <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
         <script async type="text/javascript">
 /* From extension marp-team.marp-vscode */
 (()=>{var Y=Object.defineProperty;var d=($,E)=>Y($,"name",{value:E,configurable:!0});(()=>{var $={676:(w,b,g)=>{w.exports=g(185)},185:(w,b)=>{"use strict";var g;g={value:!0};const x={h1:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"1"},style:"display: block; font-size: 2em; margin-block-start: 0.67em; margin-block-end: 0.67em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h2:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"2"},style:"display: block; font-size: 1.5em; margin-block-start: 0.83em; margin-block-end: 0.83em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h3:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"3"},style:"display: block; font-size: 1.17em; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h4:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"4"},style:"display: block; margin-block-start: 1.33em; margin-block-end: 1.33em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h5:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"5"},style:"display: block; font-size: 0.83em; margin-block-start: 1.67em; margin-block-end: 1.67em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},h6:{proto:()=>HTMLHeadingElement,attrs:{role:"heading","aria-level":"6"},style:"display: block; font-size: 0.67em; margin-block-start: 2.33em; margin-block-end: 2.33em; margin-inline-start: 0px; margin-inline-end: 0px; font-weight: bold;"},span:{proto:()=>HTMLSpanElement},pre:{proto:()=>HTMLElement,style:"display: block; font-family: monospace; white-space: pre; margin: 1em 0; --marp-auto-scaling-white-space: pre;"}},k="data-marp-auto-scaling-wrapper",u="data-marp-auto-scaling-svg",c="data-marp-auto-scaling-container";class r extends HTMLElement{constructor(){super(),this.svgPreserveAspectRatio="xMinYMid meet";const o=d(i=>([n])=>{const{width:e,height:t}=n.contentRect;this[i]={width:e,height:t},this.updateSVGRect()},"t");this.attachShadow({mode:"open"}),this.containerObserver=new ResizeObserver(o("containerSize")),this.wrapperObserver=new ResizeObserver((...i)=>{o("wrapperSize")(...i),this.flushSvgDisplay()})}static get observedAttributes(){return["data-downscale-only"]}connectedCallback(){var o,i,n,e,t;this.shadowRoot.innerHTML=`
